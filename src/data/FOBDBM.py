@@ -38,6 +38,7 @@ class FOBDataBaseManagement():
 		self.raw_path = os.path.join(self.root_path,'data','raw','FOB')
 		self.zip_files = self._get_zipfiles()
 		self.DB_file = 'FOB_DB.csv'
+		self.orders_t = ['LOB', 'FO', 'CO']
 		self.DB = None
 		self.job_id = job_id
 		self.file_toprocess = None
@@ -117,9 +118,9 @@ class FOBDataBaseManagement():
 		Raises:
 			None: This method does not raise error.
 		"""
-		DB_tmp['isin'] = ls*2
+		DB_tmp['isin'] = ls*len(self.orders_t)
 		DB_tmp[['file','state','allocate']] = f,'Pending',np.nan
-		DB_tmp['type'] = [i for i in ['LOB', 'FO', 'CO'] for _ in range(len(ls))]
+		DB_tmp['type'] = [i for i in self.orders_t for _ in range(len(ls))]
 		
 		return DB_tmp
 		
