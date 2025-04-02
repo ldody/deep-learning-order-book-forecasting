@@ -33,7 +33,7 @@ class FOBDataBaseManagement():
 		"""
 		self.path = os.path.dirname(os.path.abspath(__file__))
 		self.root_path = self.path
-		while os.path.basename(self.root_path) != 'PhD_article_2':
+		while os.path.basename(self.root_path) != 'PhD_article_1':
 			self.root_path =  os.path.dirname(self.root_path)
 		self.raw_path = os.path.join(self.root_path,'data','raw','FOB')
 		self.zip_files = self._get_zipfiles()

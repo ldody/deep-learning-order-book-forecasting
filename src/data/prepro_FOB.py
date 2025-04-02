@@ -43,7 +43,7 @@ class FOBPreprocessor:
 		"""
 		self.path = os.path.dirname(os.path.abspath(__file__))
 		self.root_path = self.path
-		while os.path.basename(self.root_path) != 'PhD_article_2':
+		while os.path.basename(self.root_path) != 'PhD_article_1':
 			self.root_path =  os.path.dirname(self.root_path)
 		self.job_id = job_id
 		self.raw_path = os.path.join(self.root_path,'data','raw','FOB')
@@ -320,7 +320,7 @@ class FOBPreprocessor:
 		Raises:
 			None: This method does not raise error.
 		"""
-		self.CO = FOB.copy()
+		self.CO = self.FOB.copy()
 		ls_order = self.CO.loc[self.CO['order_event_type'] == 'Cancel', 'order_id']
 		self.CO = self.CO.loc[self.CO['order_id'].isin(ls_order), ['order_id', 'order_event_type', 'event_time_cet', 'order_side', 'order_size']]
 
@@ -337,7 +337,7 @@ class FOBPreprocessor:
 		write(os.path.join(self.processed_path_CO, self.filename_zip), self.CO, compression='GZIP', append=False)
 		
 	
-	def array_process(self, LOB_process: bool = True, Fill_order_process: bool = True, **kwargs):
+	def array_process(self, LOB_process: bool = True, Fill_order_process: bool = True, Cancel_order_process: bool = True, **kwargs):
 		"""
 		Lauch FOB preprocessing from slurm array jobs.
 		
