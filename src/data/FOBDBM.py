@@ -319,7 +319,7 @@ class FOBDataBaseManagement():
 			if Fill_order_process:
 				ls_type.append('FO')
 			if Cancel_order_process:
-				ls_type.append('FO')
+				ls_type.append('CO')
 				
 			if ls_type:
 				cond &= self.DB['type'].isin(ls_type)

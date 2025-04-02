@@ -392,7 +392,7 @@ class FOBPreprocessor:
 
 				self.construct_FO()
 			
-			self.fobdm.terminate(data_type='FO')
+			self.fobdm.terminate(data_type='CO')
 			
 		if Cancel_order_process:
 			date = os.path.splitext(os.path.splitext(self.file)[0])[0].split('_')[-1]
