@@ -1,1 +1,12 @@
-
+pandas
+numpy
+filelock
+tensorflow
+scikit-learn
+matplotlib
+pyarrow
+fastparquet
+tqdm
+hdbscan
+ta
+optuna
