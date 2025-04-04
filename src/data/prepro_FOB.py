@@ -51,11 +51,13 @@ class FOBPreprocessor:
 		self.processed_path_LOB = os.path.join(self.processed_path,'LOB')
 		self.processed_path_FO = os.path.join(self.processed_path,'FO')
 		self.processed_path_CO = os.path.join(self.processed_path,'CO')
+		self.processed_path_TIF = os.path.join(self.processed_path,'TIF')
 		self.fobdm = fobdm(self.job_id)
 		self.FOB = pd.DataFrame()
 		self.LOB = None
 		self.FO = None
 		self.CO = None
+		self.TIF
 		self.filename_tmp = None
 		self.filename = None
 		self.filename_zip = None
@@ -336,8 +338,87 @@ class FOBPreprocessor:
 		
 		write(os.path.join(self.processed_path_CO, self.filename_zip), self.CO, compression='GZIP', append=False)
 		
+	def resample_TIF_LOB(self, data, price: str, size: str, to_add: bool = True):
+		"""
+		Resample the FOB for add/subtract sizes.
+		
+		Attributes:
+			FOB (DataFrame): FOB DataFrame.
+			resampling_unit (str): Rule of resampling for the FOB.
+		
+		Args:
+			None: This method does not require args.
+
+		Returns:
+			resample_df (DataFrame): Resampled FOB dataframe with limit orders only.
+		
+		Raises:
+			None: This method does not raise error.
+		"""
+		resample_df = data.copy()
+		
+		resample_df = resample_df[['event_time_cet', 'order_side', 'order_type', 'time_in_force'] + [price, size]]
+		
+		if to_add == False:
+			resample_df[size] *= -1
+
+		resample_df.set_index('event_time_cet', inplace=True)
+		resample_df = resample_df.groupby(['order_side', 'order_type', 'time_in_force', price]).resample(self.resampling_unit).sum()[size].to_frame()
+
+		resample_df = resample_df[~resample_df.isna().any(axis=1)]
+		resample_df = resample_df.reset_index().groupby(['event_time_cet', 'order_side', 'order_type', 'time_in_force', price], as_index=False).last()
+		
+		resample_df.columns = ['event_time_cet', 'side', 'order_type', 'time_in_force', 'price', 'size']
+		
+		return resample_df
+		
+	def construct_TIF(self):
+		"""
+		Contruct TIF dataframe.
+		
+		Attributes:
+			FOB (DataFrame): FOB DataFrame.
+			LOB (DataFrame): LOB DataFrame.
+			filename_tmp (str): Name of the temporary csv file with LOB dataframe.
+			processed_path (str): Path of the repository with processed data of FOB /data/processed/FOB/.
+		
+		Args:
+			None: This method does not require args.
+
+		Returns:
+			None: This method does not return anything.
+		
+		Raises:
+			None: This method does not raise error.
+		"""
+		data = self.FOB.copy()
+		data = data.loc[data['time_in_force'] != '0']
+		LOB_add = self.resample_TIF_LOB(data=data, price='order_price', size='order_size')
+		LOB_sub = self.resample_TIF_LOB(data=data, price='previous_price', size='previous_size', to_add=False)
+		resamp_FOB_LOB = pd.concat([LOB_add, LOB_sub], ignore_index=True).groupby(['event_time_cet', 'side', 'order_type', 'time_in_force', 'price'], as_index=False).sum()
+		
+		TIF_init = pd.DataFrame({'side':['Buy','Buy','Buy','Buy','Sell','Sell','Sell','Sell'],
+							'order_type':['Market','Market','Limit','Limit','Market','Market','Limit','Limit'],
+							'time_in_force':['Valid for Uncrossing',
+											 'Valid for Closing',
+											 'Valid for Uncrossing',
+											 'Valid for Closing',
+											 'Valid for Uncrossing',
+											 'Valid for Closing',
+											 'Valid for Uncrossing',
+											 'Valid for Closing'],
+							'size':[0,0,0,0,0,0,0,0]})
 	
-	def array_process(self, LOB_process: bool = True, Fill_order_process: bool = True, Cancel_order_process: bool = True, **kwargs):
+		for t, block in resamp_FOB_LOB.groupby('event_time_cet'):			
+			tmp = block[['side', 'order_type', 'time_in_force', 'size']]
+
+			TIF_init = pd.concat([TIF_init, tmp], ignore_index=True).groupby(['side', 'order_type', 'time_in_force'], as_index=False).sum()
+			TIF_init.index = pd.Index([t] * len(TIF_init))
+			self.TIF = pd.concat([self.TIF, TIF_init])
+		
+		write(os.path.join(self.processed_path_TIF, self.filename_zip), self.TIF, compression='GZIP', append=False)
+	
+	def array_process(self, LOB_process: bool = True, Fill_order_process: bool = True, Cancel_order_process: bool = True, TIF_order_process: bool = True, **kwargs):
 		"""
 		Lauch FOB preprocessing from slurm array jobs.
 		
@@ -410,7 +491,23 @@ class FOBPreprocessor:
 			
 			self.fobdm.terminate(data_type='CO')
 			
-	def concat_data(self, LOB_process: bool = True, Fill_order_process: bool = True, Cancel_order_process: bool = True):
+		if TIF_order_process:
+			date = os.path.splitext(os.path.splitext(self.file)[0])[0].split('_')[-1]
+			self.filename_zip = f'{self.isin}_{date}_TIF.parquet.gzip'
+			
+			if self.filename_zip in os.listdir(self.processed_path_TIF):
+				pass
+				
+			else:
+				if self.FOB.empty:
+					self.load_FOB()
+					
+				self.shift_orders()
+				self.construct_TIF()
+			
+			self.fobdm.terminate(data_type='TIF')
+			
+	def concat_data(self, LOB_process: bool = True, Fill_order_process: bool = True, Cancel_order_process: bool = True, TIF_order_process: bool = True):
 		"""
 		Concatenate each LOB/FO files by isin.
 		
@@ -468,6 +565,19 @@ class FOBPreprocessor:
 					os.remove(os.path.join(self.processed_path_CO, f))
 					
 				write(os.path.join(self.processed_path_CO, f'{isin}_final_CO.parquet.gzip'), df, compression='GZIP', append=False)
+				
+		if TIF_order_process:
+			files = [i for i in os.listdir(self.processed_path_CO) if 'final' not in i]
+			isin_ls = list(set([i.split('_')[0] for i in files]))
+			
+			for isin in isin_ls:
+				df = pd.DataFrame()
+				for f in [file for file in files if isin in file]:
+					data = pd.read_parquet(os.path.join(self.processed_path_TIF, f))
+					df = pd.concat([df, data])
+					os.remove(os.path.join(self.processed_path_TIF, f))
+					
+				write(os.path.join(self.processed_path_CO, f'{isin}_final_TIF.parquet.gzip'), df, compression='GZIP', append=False)
 		
 	
 #convert str to bool for argparse
@@ -488,6 +598,7 @@ if __name__ == "__main__":
 	parser.add_argument('--LOB_process', '-l', type=str2bool, default=True)
 	parser.add_argument('--Fill_order_process', '-fo', type=str2bool, default=True)
 	parser.add_argument('--Cancel_order_process', '-co', type=str2bool, default=True)
+	parser.add_argument('--TIF_order_process', '-co', type=str2bool, default=True)
 	parser.add_argument('--concat', '-c', type=str2bool, default=False)
 	args = parser.parse_args()
 	

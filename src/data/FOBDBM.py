@@ -38,7 +38,7 @@ class FOBDataBaseManagement():
 		self.raw_path = os.path.join(self.root_path,'data','raw','FOB')
 		self.zip_files = self._get_zipfiles()
 		self.DB_file = 'FOB_DB.csv'
-		self.orders_t = ['LOB', 'FO', 'CO']
+		self.orders_t = ['LOB', 'FO', 'CO', 'TIF']
 		self.DB = None
 		self.job_id = job_id
 		self.file_toprocess = None
