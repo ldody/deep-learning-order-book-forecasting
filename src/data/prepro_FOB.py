@@ -57,7 +57,7 @@ class FOBPreprocessor:
 		self.LOB = None
 		self.FO = None
 		self.CO = None
-		self.TIF
+		self.TIF = None
 		self.filename_tmp = None
 		self.filename = None
 		self.filename_zip = None
