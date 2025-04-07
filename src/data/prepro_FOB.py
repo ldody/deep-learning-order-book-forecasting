@@ -598,7 +598,7 @@ if __name__ == "__main__":
 	parser.add_argument('--LOB_process', '-l', type=str2bool, default=True)
 	parser.add_argument('--Fill_order_process', '-fo', type=str2bool, default=True)
 	parser.add_argument('--Cancel_order_process', '-co', type=str2bool, default=True)
-	parser.add_argument('--TIF_order_process', '-co', type=str2bool, default=True)
+	parser.add_argument('--TIF_order_process', '-tif', type=str2bool, default=True)
 	parser.add_argument('--concat', '-c', type=str2bool, default=False)
 	args = parser.parse_args()
 	
