@@ -295,7 +295,7 @@ class FOBDataBaseManagement():
 			None: This method does not raise error.
 		"""
 		
-		def create_cond(LOB_process: bool = True, Fill_order_process: bool = True, Cancel_order_process: bool = True, **kwargs):
+		def create_cond(LOB_process: bool = True, Fill_order_process: bool = True, Cancel_order_process: bool = True, TIF_order_process: bool = True, **kwargs):
 			"""
 			Create the condition to filter the DB.
 			
@@ -320,6 +320,8 @@ class FOBDataBaseManagement():
 				ls_type.append('FO')
 			if Cancel_order_process:
 				ls_type.append('CO')
+			if TIF_order_process:
+				ls_type.append('TIF')
 				
 			if ls_type:
 				cond &= self.DB['type'].isin(ls_type)
