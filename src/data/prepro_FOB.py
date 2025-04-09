@@ -579,7 +579,7 @@ class FOBPreprocessor:
 			print('Concat CO Done')
 				
 		if TIF_order_process:
-			files = [i for i in os.listdir(self.processed_path_CO) if 'final' not in i]
+			files = [i for i in os.listdir(self.processed_path_TIF) if 'final' not in i]
 			isin_ls = list(set([i.split('_')[0] for i in files]))
 			
 			for isin in isin_ls:
