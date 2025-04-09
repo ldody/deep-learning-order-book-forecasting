@@ -546,6 +546,8 @@ class FOBPreprocessor:
 					
 				write(os.path.join(self.processed_path_LOB, f'{isin}_final_LOB.parquet.gzip'), df, compression='GZIP', append=False)
 			
+			print('Concat LOB Done')
+			
 		if Fill_order_process:
 			files = [i for i in os.listdir(self.processed_path_FO) if 'final' not in i]
 			isin_ls = list(set([i.split('_')[0] for i in files]))
@@ -558,6 +560,8 @@ class FOBPreprocessor:
 					os.remove(os.path.join(self.processed_path_FO, f))
 					
 				write(os.path.join(self.processed_path_FO, f'{isin}_final_FO.parquet.gzip'), df, compression='GZIP', append=False)
+				
+			print('Concat FO Done')
 				
 		if Cancel_order_process:
 			files = [i for i in os.listdir(self.processed_path_CO) if 'final' not in i]
@@ -572,6 +576,8 @@ class FOBPreprocessor:
 					
 				write(os.path.join(self.processed_path_CO, f'{isin}_final_CO.parquet.gzip'), df, compression='GZIP', append=False)
 				
+			print('Concat CO Done')
+				
 		if TIF_order_process:
 			files = [i for i in os.listdir(self.processed_path_CO) if 'final' not in i]
 			isin_ls = list(set([i.split('_')[0] for i in files]))
@@ -583,7 +589,9 @@ class FOBPreprocessor:
 					df = pd.concat([df, data])
 					os.remove(os.path.join(self.processed_path_TIF, f))
 					
-				write(os.path.join(self.processed_path_CO, f'{isin}_final_TIF.parquet.gzip'), df, compression='GZIP', append=False)
+				write(os.path.join(self.processed_path_TIF, f'{isin}_final_TIF.parquet.gzip'), df, compression='GZIP', append=False)
+				
+			print('Concat TIF Done')
 		
 	
 #convert str to bool for argparse
