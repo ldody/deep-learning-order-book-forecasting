@@ -440,7 +440,7 @@ class FOBPreprocessor:
 		"""
 		dict_k = kwargs
 		self.file, self.isin = self.fobdm.main(**dict_k)
-		print(self.file, self.isin, LOB_process, Fill_order_process)
+		print(self.file, self.isin, dict_k)
 		
 		if LOB_process:
 			date = os.path.splitext(os.path.splitext(self.file)[0])[0].split('_')[-1]
@@ -451,6 +451,7 @@ class FOBPreprocessor:
 				pass
 				
 			else:
+				print('Start LOB process')
 				if self.FOB.empty:
 					self.load_FOB()
 					
@@ -468,6 +469,7 @@ class FOBPreprocessor:
 				pass
 				
 			else:
+				print('Start FO process')
 				if self.FOB.empty:
 					self.load_FOB()
 
@@ -484,6 +486,7 @@ class FOBPreprocessor:
 				pass
 				
 			else:
+				print('Start CO process')
 				if self.FOB.empty:
 					self.load_FOB()
 
@@ -499,6 +502,7 @@ class FOBPreprocessor:
 				pass
 				
 			else:
+				print('Start TIF process')
 				if self.FOB.empty:
 					self.load_FOB()
 					
