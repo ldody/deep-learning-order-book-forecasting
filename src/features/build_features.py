@@ -90,30 +90,56 @@ class BuildFeatures(Base):
 		Constructing LOB data with levels
 		"""
 		data = self.load_FOB_data('LOB')
-        
+		
 		final_b = pd.DataFrame()
-        final_s = pd.DataFrame()
+		final_s = pd.DataFrame()
+		final = pd.DataFrame()
+		
+		tick_p = self.to_process['Tick_step']
+		var_p = self.to_process['5min']
+		coef = int(var_p/tick_p/nb_levels*2)
+		w_int = tick_p * coef
 
-        for _, chunk in data.loc[data['side'] == 'Buy'].groupby('index'):
+		for _, chunk in data.loc[data['side'] == 'Buy'].groupby('index'):
 
-            tick_p = self.to_process['Tick_step']
-            w_int = tick_p * 10
-            bins = [chunk['price'].max()-v*w_int for v in range(nb_levels+1)]
+			bins = [chunk['price'].max()-v*w_int for v in range(nb_levels+1)]
 
-            chunk['interval'] = pd.cut(chunk['price'], bins=bins[::-1], right=True)
+			chunk['interval'] = pd.cut(chunk['price'], bins=bins[::-1], right=True)
 
-            chunk['price'] = chunk['interval'].apply(lambda x: x.left)
+			chunk['price'] = chunk['interval'].apply(lambda x: x.left)
 
-            chunk = chunk.reset_index()
+			chunk = chunk.reset_index()
 
-            chunk = chunk.groupby(['index','side','price'])['size'].sum().reset_index()
-            chunk = chunk.sort_values('price', ascending=False).reset_index()
-            chunk['rank'] = chunk.groupby('index')['price'].rank(ascending=False)
-            chunk['idx'] = 0
-            
-            test = chunk.pivot(index=['index'], columns=['rank','side'], values=['price', 'size']).T.reset_index()
-            test = test.groupby(['rank','side','level_0']).last()
-            final_b = pd.concat([final_b, test.T])
+			chunk = chunk.groupby(['index','side','price'])['size'].sum().reset_index()
+			chunk = chunk.sort_values('price', ascending=False).reset_index()
+			chunk['rank'] = chunk.groupby('index')['price'].rank(ascending=False)
+			chunk['idx'] = 0
+			
+			test = chunk.pivot(index=['index'], columns=['rank','side'], values=['price', 'size']).T.reset_index()
+			test = test.groupby(['rank','side','level_0']).last()
+			final_b = pd.concat([final_b, test.T])
+			
+		for _, chunk in t.groupby('index'):
+
+			bins = [chunk['price'].min()+v*w_int for v in range(60+1)]
+
+			chunk['interval'] = pd.cut(chunk['price'], bins=bins, right=False)
+
+			chunk['price'] = chunk['interval'].apply(lambda x: x.right)
+
+			chunk = chunk.reset_index()
+
+			chunk = chunk.groupby(['index','side','price'])['size'].sum().reset_index()
+			chunk = chunk.sort_values('price', ascending=True).reset_index()
+			chunk['rank'] = chunk.groupby('index')['price'].rank(ascending=True)
+			chunk['idx'] = 0
+			
+			test = chunk.pivot(index=['index'], columns=['rank','side'], values=['price', 'size']).T.reset_index()
+			test = test.groupby(['rank','side','level_0']).last()
+			final_s = pd.concat([final_s, test.T])
+			
+		final = pd.concat([final_b.T, final_s.T], axis=0).groupby(['rank','side','level_0']).last().T
+		final.columns = ['{}_{}_{}'.format(side.lower(), key, int(rank)) for rank, side, key in final.columns]
 		
 	def array_process(self):
 		"""
