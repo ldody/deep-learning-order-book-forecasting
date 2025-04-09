@@ -440,7 +440,7 @@ class FOBPreprocessor:
 		"""
 		dict_k = kwargs
 		self.file, self.isin = self.fobdm.main(**dict_k)
-		print(self.file, self.isin, dict_k)
+		print(self.file, self.isin, LOB_process, Fill_order_process, Cancel_order_process, TIF_order_process, dict_k)
 		
 		if LOB_process:
 			date = os.path.splitext(os.path.splitext(self.file)[0])[0].split('_')[-1]
@@ -448,6 +448,7 @@ class FOBPreprocessor:
 			self.filename_zip = f'{self.isin}_{date}_LOB.parquet.gzip'
 			
 			if self.filename_zip in os.listdir(self.processed_path_LOB):
+				print('Already done')
 				pass
 				
 			else:
@@ -499,6 +500,7 @@ class FOBPreprocessor:
 			self.filename_zip = f'{self.isin}_{date}_TIF.parquet.gzip'
 			
 			if self.filename_zip in os.listdir(self.processed_path_TIF):
+				print('Already done')
 				pass
 				
 			else:
