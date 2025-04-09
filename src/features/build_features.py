@@ -59,7 +59,7 @@ class BuildFeatures(Base):
 	
 	def load_ohlcv(self):
 		"""
-		loading OHLCV
+		Loading OHLCV
 		"""
 		ohlcv_file = [f for f in os.listdir(self.ohlcv_path) if self.to_process['RIC'] == f.split('.')[0]]
 		ohlcv_df = pd.read_csv(os.path.join(self.ohlcv_path, ohlcv_file))
@@ -74,6 +74,23 @@ class BuildFeatures(Base):
 		ohlcv_df = ohlcv_df.between_time('9:00', '17:35').reset_index()
 		
 		return ohlcv_df
+		
+	def load_FOB_data(self, data_type: str):
+		"""
+		Loading FOB data among LOB, FO, CO and TIF
+		"""
+		data_file = [f for f in os.listdir(os.path.join(self.processed_path, data_type)) if self.to_process['ISIN'] == f.split('.')[0]]
+		data = pd.read_parquet(os.path.join(self.processed_path, data_type, data_file))
+		data = data.between_time('9:00', '17:35')
+		
+		return data
+		
+	def construct_LOB(self):
+		"""
+		Constructing LOB data with levels
+		"""
+		data = self.load_FOB_data('LOB')
+		
 		
 	def array_process(self):
 		"""
