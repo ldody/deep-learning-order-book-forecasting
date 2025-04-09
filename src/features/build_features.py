@@ -85,12 +85,35 @@ class BuildFeatures(Base):
 		
 		return data
 		
-	def construct_LOB(self):
+	def construct_LOB(self, nb_levels: int = 60):
 		"""
 		Constructing LOB data with levels
 		"""
 		data = self.load_FOB_data('LOB')
-		
+        
+		final_b = pd.DataFrame()
+        final_s = pd.DataFrame()
+
+        for _, chunk in data.loc[data['side'] == 'Buy'].groupby('index'):
+
+            tick_p = self.to_process['Tick_step']
+            w_int = tick_p * 10
+            bins = [chunk['price'].max()-v*w_int for v in range(nb_levels+1)]
+
+            chunk['interval'] = pd.cut(chunk['price'], bins=bins[::-1], right=True)
+
+            chunk['price'] = chunk['interval'].apply(lambda x: x.left)
+
+            chunk = chunk.reset_index()
+
+            chunk = chunk.groupby(['index','side','price'])['size'].sum().reset_index()
+            chunk = chunk.sort_values('price', ascending=False).reset_index()
+            chunk['rank'] = chunk.groupby('index')['price'].rank(ascending=False)
+            chunk['idx'] = 0
+            
+            test = chunk.pivot(index=['index'], columns=['rank','side'], values=['price', 'size']).T.reset_index()
+            test = test.groupby(['rank','side','level_0']).last()
+            final_b = pd.concat([final_b, test.T])
 		
 	def array_process(self):
 		"""

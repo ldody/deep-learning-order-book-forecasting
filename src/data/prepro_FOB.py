@@ -513,7 +513,7 @@ class FOBPreprocessor:
 			
 			self.fobdm.terminate(data_type='TIF')
 			
-	def concat_data(self, LOB_process: bool = True, Fill_order_process: bool = True, Cancel_order_process: bool = True, TIF_order_process: bool = True):
+	def concat_data(self, LOB_process: bool = True, Fill_order_process: bool = True, Cancel_order_process: bool = True, TIF_order_process: bool = True, **kwargs):
 		"""
 		Concatenate each LOB/FO files by isin.
 		
