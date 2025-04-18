@@ -223,6 +223,21 @@ class BuildFeatures(Base):
 		print(self.features_df)
 		filename_zip = f'{self.to_process["ISIN"]}_features.parquet.gzip'
 		write(os.path.join(self.features_path, filename_zip), self.features_df, compression='GZIP', append=False)
+		
+	def main(self):
+		"""
+		Running script
+		"""
+		for i, row in self.df_assets.iterrows():
+			self.to_process = row
+			self.features_df = self.load_ohlcv()
+			self.features_df = pd.concat([self.features_df, self.construct_LOB()], ignore_index=False, axis=1)
+			self.features_df = pd.concat([self.features_df, self.construct_FO()], ignore_index=False, axis=1).dropna(subset=['Close']).fillna(0)
+			self.features_df = pd.concat([self.features_df, self.construct_CO()], ignore_index=False, axis=1).dropna(subset=['Close']).fillna(0)
+			self.features_df = pd.concat([self.features_df, self.construct_TIF()], ignore_index=False, axis=1).dropna(subset=['Close']).fillna(0)
+			filename_zip = f'{self.to_process["ISIN"]}_features.parquet.gzip'
+			write(os.path.join(self.features_path, filename_zip), self.features_df, compression='GZIP', append=False)
+			print(f'{i}/{len(self.df_assets)} done')
 
 
 #convert str to bool for argparse
@@ -248,3 +263,6 @@ if __name__ == "__main__":
 
 	if args.slurm_array:
 		bf.array_process()
+		
+	else:
+		bf.main()
