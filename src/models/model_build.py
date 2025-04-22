@@ -118,7 +118,7 @@ class ANN_model():
 		# Compare les signes : True si les signes sont identiques
 		same_sign = tf.equal(tf.sign(y_true), tf.sign(y_pred))
 	
-	return tf.reduce_mean(tf.cast(same_sign, tf.float32))
+		return tf.reduce_mean(tf.cast(same_sign, tf.float32))
 	
 	def params_opti(self, trial, mod_type):
 		"""
