@@ -18,6 +18,6 @@ source /home_nfs/polytech/leo.dody/PhD/Article_1/PhD_article_1/.venv/bin/activat
 
 export PYTHONUNBUFFERED=TRUE
 
-python3 /home_nfs/polytech/leo.dody/PhD/Article_1/PhD_article_1/src/model/model_main.py -ba True --job_id $SLURM_ARRAY_TASK_ID
+python3 ../src/models/model_main.py -ba True --job_id $SLURM_ARRAY_TASK_ID
 
 deactivate
