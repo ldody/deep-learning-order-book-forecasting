@@ -120,7 +120,7 @@ class ANN_model():
 	
 	return tf.reduce_mean(tf.cast(same_sign, tf.float32))
 	
-	def params_opti(self, trial, mod_type)
+	def params_opti(self, trial, mod_type):
 		"""
 		CNN parameters for optimization process
 		"""
