@@ -186,7 +186,7 @@ if __name__ == "__main__":
 	args = parser.parse_args()
 	
 	reg = Regression(args.job_id)
-
+	print(args)
 	if args.slurm_array:
 		reg.array_process()
 		
