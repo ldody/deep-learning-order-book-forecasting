@@ -133,7 +133,11 @@ class Regression(Base):
 			k = 5
 			kf = KFold(n_splits=k, shuffle=True, random_state=42)
 			score = []
-			
+			print(X_data.to_numpy().shape[1:])
+			try:				
+				model = ANN_model().model_build(input_shape = X_data.to_numpy().shape[1:], mod_type = self.to_process['model'], **dict_params)
+			except:
+				raise optuna.exceptions.TrialPruned()
 			
 			for fold, (train_idx, val_idx) in enumerate(kf.split(X_data)):
 				X_train, Y_train = X_data[train_idx], Y_data[train_idx]
@@ -141,8 +145,6 @@ class Regression(Base):
 			
 				dataset = tf.data.Dataset.from_tensor_slices((X_train, {"pred": Y_train})).shuffle(100).batch(dict_params['batch_size'])
 				eval_dataset = tf.data.Dataset.from_tensor_slices((X_val, {"pred": Y_val})).batch(dict_params['batch_size'])
-								
-				model = ANN_model().model_build(input_shape = X_train.shape[1:], mod_type = self.to_process['model'], **dict_params)
 				
 				print('Start fitting model')
 				callback = LimitTrainingTime(17000)
