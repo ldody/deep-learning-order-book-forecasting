@@ -103,7 +103,8 @@ class Regression(Base):
 		storage = optuna.storages.JournalStorage(
 			optuna.storages.journal.JournalFileBackend(DB_PATH),
 		)
-		
+		print(self.to_process)
+		print(init_db)
 		while True:
 			try:
 				print('Loading study')
