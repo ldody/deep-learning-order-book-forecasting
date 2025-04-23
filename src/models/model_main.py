@@ -88,6 +88,7 @@ class Regression(Base):
 		Running hyperparameters optimization process.
 		"""
 		# retrieving optimization to perform
+		print('Checking assets file')
 		with FileLock(os.path.join(self.data_path, 'assets_DB.csv.lock')):
 			df_assets = pd.read_csv(os.path.join(self.data_path, 'assets_DB.csv'), index_col=1)
 			self.to_process = df_assets.loc[df_assets['optimization'] < max_iter].iloc[0]
@@ -95,6 +96,7 @@ class Regression(Base):
 			df_assets.to_csv(os.path.join(self.data_path, 'assets_DB.csv'))
 		
 		# preparing bayesian optimization
+		print('Preparing optuna config')
 		optuna.logging.get_logger("optuna").addHandler(logging.StreamHandler(sys.stdout))
 		STUDY_NAME = f'{self.to_process["ISIN"]}_{self.to_process["data"]}_{self.to_process["model"]}_optuna_study'
 		DB_PATH = os.path.join(self.path_model, f'{self.to_process["ISIN"]}_{self.to_process["data"]}_{self.to_process["model"]}_optimization.log')
@@ -192,4 +194,5 @@ if __name__ == "__main__":
 		reg.combined_data_process()
 	
 	elif args.bayesian_opti:
+		print('Launch opti')
 		reg.optimization()
