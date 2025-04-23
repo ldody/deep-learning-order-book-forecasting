@@ -166,7 +166,6 @@ class Regression(Base):
 			return np.mean(score)
 
 		study.optimize(objective, n_trials=1, timeout=17000)
-		print(study.best_trial)
 		
 		
 #convert str to bool for argparse
