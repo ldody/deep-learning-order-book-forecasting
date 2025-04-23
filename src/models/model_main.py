@@ -102,7 +102,7 @@ class Regression(Base):
 			df_assets = pd.read_csv(os.path.join(self.data_path, 'assets_DB.csv'), index_col=0)
 			
 			n = max_iter + 1
-			while n => max_iter:
+			while n >= max_iter:
 				if len(df_assets.loc[df_assets['optimization'] != False]) == 0:
 					sys.exit('All optimizations performed')
 				
@@ -118,7 +118,7 @@ class Regression(Base):
 					study = optuna.create_study(storage=storage, study_name=STUDY_NAME, direction='minimize')
 					n = 0
 					
-				if n => max_iter:
+				if n >= max_iter:
 					df_assets.loc[self.to_process.name, 'optimization'] = True
 					df_assets.to_csv(os.path.join(self.data_path, 'assets_DB.csv'))
 							
