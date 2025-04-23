@@ -47,7 +47,7 @@ class ANN_model():
 		"""
 		self.path = os.path.dirname(os.path.abspath(__file__))
 		self.root_path = self.path
-		while os.path.basename(self.root_path) != 'PhD_article_2':
+		while '.venv' not in os.listdir(self.root_path):
 			self.root_path =  os.path.dirname(self.root_path)
 		self.job_id = job_id
 		self.resampling_unit = resampling_unit
