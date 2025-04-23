@@ -133,6 +133,8 @@ class Regression(Base):
 			
 			# preparing datasets
 			self.load_data()
+			print(self.df_features)
+			print(self.df_features[self.df_features.applymap(type).eq(str).any(axis=1)])
 			X_data, Y_data, _, _, _ = self.prepro.preprocessing(self.df_features, data_type = self.to_process['data'])
 			X_data, Y_data = X_data[:int(0.8*len(X_data))], Y_data[:int(0.8*len(Y_data))]
 			
