@@ -116,7 +116,7 @@ class ANN_model():
 				x = Dense(units=hidden_units, activation='relu')(x)
 			
 		
-		pred = Dense(units=100, activation='tanh')(x)
+		pred = Dense(units=100, activation='linear')(x)
 		
 		model = Model(inputs=input_model, outputs=pred)
 			
