@@ -52,7 +52,9 @@ class ANN_model():
 		self.job_id = job_id
 		self.resampling_unit = resampling_unit
 		
-	def model_build(self, input_shape, mod_type, **kwargs):
+	def model_build(self, input_shape, mod_type, filters: int = 32, kernel_size: slice =(3,3), pool_size: int = 2, 
+					hidden_units: int = 32, num_layers: int = 1, num_layers_Conv: int = 1, hidden_units_LSTM: int = 16, 
+					num_layers_LSTM: int = 1, batch_size: int = 32, epochs: int = 100, **kwargs):
 		"""
 		Building and compiling CNN 2D model.
 		
