@@ -2,6 +2,7 @@
 import os, sys
 import logging
 import warnings
+import traceback
 import pandas as pd
 import numpy as np
 import argparse
@@ -137,6 +138,7 @@ class Regression(Base):
 			try:				
 				model = ANN_model().model_build(input_shape = X_data.shape[1:], mod_type = self.to_process['model'], **dict_params)
 			except:
+				traceback.print_exc()
 				raise optuna.exceptions.TrialPruned()
 			
 			for fold, (train_idx, val_idx) in enumerate(kf.split(X_data)):
