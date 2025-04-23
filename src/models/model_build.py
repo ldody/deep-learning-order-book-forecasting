@@ -116,9 +116,9 @@ class ANN_model():
 				x = Dense(units=hidden_units, activation='relu')(x)
 			
 		
-		pred = Dense(units=100, activation='tanh')(x)
+		pred_output = Dense(units=100, activation='tanh', name='pred')(x)
 		
-		model = Model(inputs=input_model, outputs=pred, name='pred')
+		model = Model(inputs=input_model, outputs={'pred': pred_output}), name='pred')
 			
 		model.compile(optimizer=Adam(learning_rate=1e-4, clipnorm=1.0), loss='mean_squared_error', metrics=['mse','mae',self.sign_accuracy])
 					  
