@@ -92,6 +92,7 @@ class Regression(Base):
 		with FileLock(os.path.join(self.data_path, 'assets_DB.csv.lock')):
 			df_assets = pd.read_csv(os.path.join(self.data_path, 'assets_DB.csv'), index_col=0)
 			self.to_process = df_assets.loc[df_assets['optimization'] < max_iter].iloc[0]
+			init_db = df_assets.loc[self.to_process.name, 'optimization']
 			df_assets.loc[self.to_process.name, 'optimization'] += 1
 			df_assets.to_csv(os.path.join(self.data_path, 'assets_DB.csv'))
 		
@@ -110,7 +111,7 @@ class Regression(Base):
 				break
 				
 			except:
-				if self.job_id == 0:
+				if init_db == 0:
 					print('Creatind DB')
 					study = optuna.create_study(storage=storage, study_name=STUDY_NAME, direction='minimize')
 				
