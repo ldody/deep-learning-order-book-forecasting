@@ -155,6 +155,8 @@ class Regression(Base):
 					start_time = time.time()
 					res = model.predict(eval_dataset)
 					print(res)
+					print(res.dtype)
+					print(pd.DataFrame(res))
 					history = model.fit(dataset, 
 										  epochs=dict_params['epochs'],  
 										  verbose=2,
