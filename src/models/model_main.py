@@ -133,9 +133,9 @@ class Regression(Base):
 			k = 5
 			kf = KFold(n_splits=k, shuffle=True, random_state=42)
 			score = []
-			print(X_data.to_numpy().shape[1:])
+
 			try:				
-				model = ANN_model().model_build(input_shape = X_data.to_numpy().shape[1:], mod_type = self.to_process['model'], **dict_params)
+				model = ANN_model().model_build(input_shape = X_data.shape[1:], mod_type = self.to_process['model'], **dict_params)
 			except:
 				raise optuna.exceptions.TrialPruned()
 			
