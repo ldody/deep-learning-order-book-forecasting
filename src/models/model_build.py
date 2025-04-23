@@ -66,6 +66,7 @@ class ANN_model():
 		"""
 		if mod_type == 'CNN':
 			input_model = Input(shape=input_shape)
+			input_model = Reshape((input_shape[0], input_shape[1], 1))(input_model)
 			x = Conv2D(filters=filters, kernel_size=kernel_size, activation='relu')(input_model)
 			x = MaxPooling2D(pool_size=pool_size)(x)
 			for _ in range(num_layers_Conv - 1):
@@ -92,6 +93,7 @@ class ANN_model():
 		
 		if mod_type == 'CNN_LSTM':
 			input_model = Input(shape=input_shape)
+			input_model = Reshape((input_shape[0], input_shape[1], 1))(input_model)
 			x = Conv2D(filters=filters, kernel_size=kernel_size, activation='relu')(input_model)
 			x = MaxPooling2D(pool_size=pool_size)(x)
 			for _ in range(num_layers_Conv - 1):
