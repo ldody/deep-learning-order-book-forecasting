@@ -120,7 +120,7 @@ class ANN_model():
 		
 		model = Model(inputs=input_model, outputs=pred)
 			
-		model.compile(optimizer=Adam(learning_rate=1e-4, clipnorm=1.0), loss='mean_squared_error', metrics=['mse','mae',self.sign_accuracy])
+		model.compile(optimizer=Adam(learning_rate=1e-4, clipnorm=1.0), loss='mean_squared_error', metrics=['mse','mae'])
 					  
 		return model
 
