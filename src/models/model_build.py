@@ -10,6 +10,8 @@ import tensorflow as tf
 from tensorflow.keras.layers import Input, Conv2D, Flatten, Dense, LSTM, MaxPooling2D
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import MultiHeadAttention, Dropout, Add, Reshape, Lambda
+from tensorflow.keras.optimizers import Adam
+
 tf.random.set_seed(42)
 
 
@@ -118,12 +120,13 @@ class ANN_model():
 		
 		model = Model(inputs=input_model, outputs=pred)
 			
-		model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mse','mae',self.sign_accuracy])
+		model.compile(optimizer=Adam(learning_rate=1e-4, clipnorm=1.0), loss='mean_squared_error', metrics=['mse','mae',self.sign_accuracy])
 					  
 		return model
 
 	def sign_accuracy(self, y_true, y_pred):
 		# Compare les signes : True si les signes sont identiques
+		y_pred = tf.where(tf.math.is_nan(y_pred), tf.zeros_like(y_pred), y_pred)
 		same_sign = tf.equal(tf.sign(y_true), tf.sign(y_pred))
 	
 		return tf.reduce_mean(tf.cast(same_sign, tf.float32))
