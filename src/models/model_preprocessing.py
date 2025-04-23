@@ -62,6 +62,8 @@ class RegressionPreprocess(Base):
 		'''
 		Preprocessing FOB for models.
 		'''
+		data['Close'] = data['Close'].bfill()
+		data['Close'] = data['Close'].ffill()
 		data = self.create_target(data)
 		
 		data, scaler_p, scaler_v, scaler_t = self.scaling(data)
