@@ -116,7 +116,7 @@ class ANN_model():
 				x = Dense(units=hidden_units, activation='relu')(x)
 			
 		
-		pred = Dense(units=100, activation='linear')(x)
+		pred = Dense(units=100, activation='tanh')(x)
 		
 		model = Model(inputs=input_model, outputs=pred)
 			
@@ -126,7 +126,6 @@ class ANN_model():
 
 	def sign_accuracy(self, y_true, y_pred):
 		# Compare les signes : True si les signes sont identiques
-		y_pred = tf.where(tf.math.is_nan(y_pred), tf.zeros_like(y_pred, dtype=tf.float32), y_pred)
 		same_sign = tf.equal(tf.sign(y_true), tf.sign(y_pred))
 	
 		return tf.reduce_mean(tf.cast(same_sign, tf.float32))

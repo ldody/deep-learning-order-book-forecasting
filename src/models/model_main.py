@@ -144,11 +144,11 @@ class Regression(Base):
 				model = ANN_model().model_build(input_shape = X_data.shape[1:], mod_type = self.to_process['model'], **dict_params)
 				for fold, (train_idx, val_idx) in enumerate(kf.split(X_data)):
 					X_train, Y_train = X_data[train_idx], Y_data[train_idx]
-					X_val, Y_val = X_data[val_idx], Y_data[val_idx]
+
 					print(X_train.dtype, Y_train.dtype, X_val.dtype, Y_val.dtype)
 					dataset = tf.data.Dataset.from_tensor_slices((X_train, {"pred": Y_train})).shuffle(100).batch(dict_params['batch_size'])
 					eval_dataset = tf.data.Dataset.from_tensor_slices((X_val, {"pred": Y_val})).batch(dict_params['batch_size'])
-					
+					print(dataset)
 					print('Start fitting model')
 					callback = LimitTrainingTime(17000)
 					start_time = time.time()
