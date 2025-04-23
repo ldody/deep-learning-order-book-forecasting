@@ -142,35 +142,35 @@ class Regression(Base):
 
 			try:				
 				model = ANN_model().model_build(input_shape = X_data.shape[1:], mod_type = self.to_process['model'], **dict_params)
+				for fold, (train_idx, val_idx) in enumerate(kf.split(X_data)):
+					X_train, Y_train = X_data[train_idx], Y_data[train_idx]
+					X_val, Y_val = X_data[val_idx], Y_data[val_idx]
+				
+					dataset = tf.data.Dataset.from_tensor_slices((X_train, {"pred": Y_train})).shuffle(100).batch(dict_params['batch_size'])
+					eval_dataset = tf.data.Dataset.from_tensor_slices((X_val, {"pred": Y_val})).batch(dict_params['batch_size'])
+					
+					print('Start fitting model')
+					callback = LimitTrainingTime(17000)
+					start_time = time.time()
+					history = model.fit(dataset, 
+										  epochs=dict_params['epochs'],  
+										  verbose=2,
+										  validation_data=eval_dataset,
+										  callbacks=[callback]
+										  )
+					end_time = time.time()
+					
+					if end_time - start_time > 17000:
+						raise optuna.exceptions.TrialPruned()
+						
+					else:
+						score.append(min(history.history['val_loss'][30:]))
+				
+				return np.mean(score)
+				
 			except:
 				traceback.print_exc()
 				raise optuna.exceptions.TrialPruned()
-			
-			for fold, (train_idx, val_idx) in enumerate(kf.split(X_data)):
-				X_train, Y_train = X_data[train_idx], Y_data[train_idx]
-				X_val, Y_val = X_data[val_idx], Y_data[val_idx]
-			
-				dataset = tf.data.Dataset.from_tensor_slices((X_train, {"pred": Y_train})).shuffle(100).batch(dict_params['batch_size'])
-				eval_dataset = tf.data.Dataset.from_tensor_slices((X_val, {"pred": Y_val})).batch(dict_params['batch_size'])
-				
-				print('Start fitting model')
-				callback = LimitTrainingTime(17000)
-				start_time = time.time()
-				history = model.fit(dataset, 
-									  epochs=dict_params['epochs'],  
-									  verbose=2,
-									  validation_data=eval_dataset,
-									  callbacks=[callback]
-									  )
-				end_time = time.time()
-				
-				if end_time - start_time > 17000:
-					raise optuna.exceptions.TrialPruned()
-					
-				else:
-					score.append(min(history.history['val_loss'][30:]))
-			
-			return np.mean(score)
 
 		study.optimize(objective, n_trials=1, timeout=17000)
 		
