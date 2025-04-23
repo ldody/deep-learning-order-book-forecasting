@@ -90,12 +90,14 @@ class Regression(Base):
 		Running hyperparameters optimization process.
 		"""
 		# preparing bayesian optimization
-		optuna.logging.get_logger("optuna").addHandler(logging.StreamHandler(sys.stdout))
-		STUDY_NAME = f'{self.to_process["ISIN"]}_{self.to_process["data"]}_{self.to_process["model"]}_optuna_study'
-		DB_PATH = os.path.join(self.path_model, f'{self.to_process["ISIN"]}_{self.to_process["data"]}_{self.to_process["model"]}_optimization.log')
-		storage = optuna.storages.JournalStorage(
-			optuna.storages.journal.JournalFileBackend(DB_PATH),
-		)
+		def load_optuna_config()
+			optuna.logging.get_logger("optuna").addHandler(logging.StreamHandler(sys.stdout))
+			STUDY_NAME = f'{self.to_process["ISIN"]}_{self.to_process["data"]}_{self.to_process["model"]}_optuna_study'
+			DB_PATH = os.path.join(self.path_model, f'{self.to_process["ISIN"]}_{self.to_process["data"]}_{self.to_process["model"]}_optimization.log')
+			storage = optuna.storages.JournalStorage(
+				optuna.storages.journal.JournalFileBackend(DB_PATH),
+			)
+			return STUDY_NAME, DB_PATH, storage
 		
 		# retrieving optimization to perform
 		with FileLock(os.path.join(self.data_path, 'assets_DB.csv.lock')):
@@ -108,6 +110,7 @@ class Regression(Base):
 				
 				else:
 					self.to_process = df_assets.loc[df_assets['optimization'] != False].iloc[0]
+					STUDY_NAME, DB_PATH, storage = load_optuna_config()
 				
 				try:
 					study = optuna.load_study(storage=storage, study_name=STUDY_NAME)
