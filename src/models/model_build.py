@@ -69,7 +69,11 @@ class ANN_model():
 			input_model = Reshape((input_shape[0], input_shape[1], 1))(input_model)
 			x = Conv2D(filters=filters, kernel_size=kernel_size, activation='relu')(input_model)
 			for _ in range(num_layers_Conv - 1):
-				x = Conv2D(filters=filters//2, kernel_size=(3,3), activation='relu')(x)
+				if input_shape[1] < 10:
+					s = (3,1)
+				else:
+					s = (3,3)
+				x = Conv2D(filters=filters//2, kernel_size=s, activation='relu')(x)
 				
 			x = Flatten()(x)
 			
@@ -94,7 +98,11 @@ class ANN_model():
 			input_model = Reshape((input_shape[0], input_shape[1], 1))(input_model)
 			x = Conv2D(filters=filters, kernel_size=kernel_size, activation='relu')(input_model)
 			for _ in range(num_layers_Conv - 1):
-				x = Conv2D(filters=filters//2, kernel_size=(3,3), activation='relu')(x)
+				if input_shape[1] < 10:
+					s = (3,1)
+				else:
+					s = (3,3)
+				x = Conv2D(filters=filters//2, kernel_size=s, activation='relu')(x)
 				
 			x = LSTM(units=hidden_units_LSTM, return_sequences=True, dropout=0.2)(x)
 			for _ in range(num_layers_LSTM - 1):
