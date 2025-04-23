@@ -109,7 +109,7 @@ class Regression(Base):
 					sys.exit('All optimizations performed')
 				
 				else:
-					self.to_process = df_assets.loc[df_assets['optimization'] != False].iloc[0]
+					self.to_process = df_assets.loc[df_assets['optimization'] != True].iloc[0]
 					STUDY_NAME, DB_PATH, storage = load_optuna_config()
 				
 				try:
