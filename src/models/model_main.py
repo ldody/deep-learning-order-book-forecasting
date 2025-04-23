@@ -149,7 +149,10 @@ class Regression(Base):
 
 					dataset = tf.data.Dataset.from_tensor_slices((X_train, {"pred": Y_train})).shuffle(100).batch(dict_params['batch_size'])
 					eval_dataset = tf.data.Dataset.from_tensor_slices((X_val, {"pred": Y_val})).batch(dict_params['batch_size'])
-					print(dataset)
+					for x_batch, y_batch in dataset.take(1):
+						print("Type de x_batch:", x_batch.dtype)
+						print("Type de y_batch:", y_batch.dtype)
+						print("Exemple de y_batch:", y_batch[:5])
 					print('Start fitting model')
 					callback = LimitTrainingTime(17000)
 					start_time = time.time()
