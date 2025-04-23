@@ -89,14 +89,6 @@ class Regression(Base):
 		"""
 		Running hyperparameters optimization process.
 		"""
-		# retrieving optimization to perform
-		with FileLock(os.path.join(self.data_path, 'assets_DB.csv.lock')):
-			df_assets = pd.read_csv(os.path.join(self.data_path, 'assets_DB.csv'), index_col=0)
-			self.to_process = df_assets.loc[df_assets['optimization'] < max_iter].iloc[0]
-			init_db = df_assets.loc[self.to_process.name, 'optimization']
-			df_assets.loc[self.to_process.name, 'optimization'] += 1
-			df_assets.to_csv(os.path.join(self.data_path, 'assets_DB.csv'))
-		
 		# preparing bayesian optimization
 		optuna.logging.get_logger("optuna").addHandler(logging.StreamHandler(sys.stdout))
 		STUDY_NAME = f'{self.to_process["ISIN"]}_{self.to_process["data"]}_{self.to_process["model"]}_optuna_study'
@@ -104,22 +96,32 @@ class Regression(Base):
 		storage = optuna.storages.JournalStorage(
 			optuna.storages.journal.JournalFileBackend(DB_PATH),
 		)
-		print(self.to_process)
-		print(init_db)
-		while True:
-			try:
-				print('Loading study')
-				study = optuna.load_study(storage=storage, study_name=STUDY_NAME)
-				break
-				
-			except:
-				if init_db == 0:
-					print('Creatind DB')
-					study = optuna.create_study(storage=storage, study_name=STUDY_NAME, direction='minimize')
+		
+		# retrieving optimization to perform
+		with FileLock(os.path.join(self.data_path, 'assets_DB.csv.lock')):
+			df_assets = pd.read_csv(os.path.join(self.data_path, 'assets_DB.csv'), index_col=0)
+			
+			n = max_iter + 1
+			while n => max_iter:
+				if len(df_assets.loc[df_assets['optimization'] != False]) == 0:
+					sys.exit('All optimizations performed')
 				
 				else:
-					print('Waiting for DB creation')
-					time.sleep(60)
+					self.to_process = df_assets.loc[df_assets['optimization'] != False].iloc[0]
+				
+				try:
+					study = optuna.load_study(storage=storage, study_name=STUDY_NAME)
+					df = study.trials_dataframe()
+					n = max(len(df.loc[(df['state'] == 'COMPLETE') | (df['state'] == 'RUNNING')]), 1)
+				except:
+					traceback.print_exc()
+					study = optuna.create_study(storage=storage, study_name=STUDY_NAME, direction='minimize')
+					n = 0
+					
+				if n => max_iter:
+					df_assets.loc[self.to_process.name, 'optimization'] = True
+					df_assets.to_csv(os.path.join(self.data_path, 'assets_DB.csv'))
+							
 		
 		print('Starting BA')
 		

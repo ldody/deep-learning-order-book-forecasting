@@ -52,7 +52,7 @@ class ANN_model():
 		self.job_id = job_id
 		self.resampling_unit = resampling_unit
 		
-	def model_build(self, input_shape, mod_type, filters: int = 32, kernel_size: slice =(3,3), pool_size: int = 2, 
+	def model_build(self, input_shape, mod_type, filters: int = 32, kernel_size: slice =(3,3), 
 					hidden_units: int = 32, num_layers: int = 1, num_layers_Conv: int = 1, hidden_units_LSTM: int = 16, 
 					num_layers_LSTM: int = 1, batch_size: int = 32, epochs: int = 100, **kwargs):
 		"""
@@ -68,10 +68,8 @@ class ANN_model():
 			input_model = Input(shape=input_shape)
 			input_model = Reshape((input_shape[0], input_shape[1], 1))(input_model)
 			x = Conv2D(filters=filters, kernel_size=kernel_size, activation='relu')(input_model)
-			x = MaxPooling2D(pool_size=pool_size)(x)
 			for _ in range(num_layers_Conv - 1):
-				x = Conv2D(filters=filters, kernel_size=kernel_size, activation='relu')(x)
-				x = MaxPooling2D(pool_size=pool_size)(x)
+				x = Conv2D(filters=filters//2, kernel_size=(3,3), activation='relu')(x)
 				
 			x = Flatten()(x)
 			
@@ -95,10 +93,8 @@ class ANN_model():
 			input_model = Input(shape=input_shape)
 			input_model = Reshape((input_shape[0], input_shape[1], 1))(input_model)
 			x = Conv2D(filters=filters, kernel_size=kernel_size, activation='relu')(input_model)
-			x = MaxPooling2D(pool_size=pool_size)(x)
 			for _ in range(num_layers_Conv - 1):
-				x = Conv2D(filters=filters, kernel_size=kernel_size, activation='relu')(x)
-				x = MaxPooling2D(pool_size=pool_size)(x)
+				x = Conv2D(filters=filters//2, kernel_size=(3,3), activation='relu')(x)
 				
 			x = LSTM(units=hidden_units_LSTM, return_sequences=True, dropout=0.2)(x)
 			for _ in range(num_layers_LSTM - 1):
@@ -131,7 +127,6 @@ class ANN_model():
 		if mod_type == 'CNN':
 			trial.suggest_categorical('filters', [32, 64])
 			trial.suggest_categorical('kernel_size', [(3,3), (5,5), (7,7)])
-			trial.suggest_categorical('pool_size', [2, 4, 8])
 			trial.suggest_categorical('hidden_units', [32, 64, 128, 256])
 			trial.suggest_categorical('num_layers', [1, 2, 3])
 			trial.suggest_categorical('num_layers_Conv', [1, 2])
@@ -149,7 +144,6 @@ class ANN_model():
 		elif mod_type == 'CNN_LSTM':
 			trial.suggest_categorical('filters', [32, 64])
 			trial.suggest_categorical('kernel_size', [(3,3), (5,5), (7,7)])
-			trial.suggest_categorical('pool_size', [2, 4, 8])
 			trial.suggest_categorical('hidden_units', [32, 64, 128, 256])
 			trial.suggest_categorical('num_layers', [1, 2, 3])
 			trial.suggest_categorical('num_layers_Conv', [1, 2])
