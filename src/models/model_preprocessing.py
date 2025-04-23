@@ -65,6 +65,7 @@ class RegressionPreprocess(Base):
 		data['Close'] = data['Close'].bfill()
 		data['Close'] = data['Close'].ffill()
 		data = self.create_target(data)
+		print(data.filter(like='targer').dtypes)
 		
 		data, scaler_p, scaler_v, scaler_t = self.scaling(data)
 		
