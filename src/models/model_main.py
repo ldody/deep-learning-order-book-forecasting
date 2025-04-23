@@ -133,7 +133,7 @@ class Regression(Base):
 			
 			# preparing datasets
 			self.load_data()
-			print(self.df_features.dtypes)
+
 			X_data, Y_data, _, _, _ = self.prepro.preprocessing(self.df_features, data_type = self.to_process['data'])
 			X_data, Y_data = X_data[:int(0.8*len(X_data))], Y_data[:int(0.8*len(Y_data))]
 			
@@ -153,6 +153,8 @@ class Regression(Base):
 					print('Start fitting model')
 					callback = LimitTrainingTime(17000)
 					start_time = time.time()
+					res = model.predict(eval_dataset)
+					print(res)
 					history = model.fit(dataset, 
 										  epochs=dict_params['epochs'],  
 										  verbose=2,
