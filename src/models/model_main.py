@@ -142,7 +142,7 @@ class Regression(Base):
 				dataset = tf.data.Dataset.from_tensor_slices((X_train, {"pred": Y_train})).shuffle(100).batch(dict_params['batch_size'])
 				eval_dataset = tf.data.Dataset.from_tensor_slices((X_val, {"pred": Y_val})).batch(dict_params['batch_size'])
 								
-				model = ANNmodel().model_build(input_shape = X_train.shape[1:], mod_type = self.to_process['model'], **dict_params)
+				model = ANN_model().model_build(input_shape = X_train.shape[1:], mod_type = self.to_process['model'], **dict_params)
 				
 				print('Start fitting model')
 				callback = LimitTrainingTime(17000)
