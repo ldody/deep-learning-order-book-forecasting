@@ -125,6 +125,8 @@ class ANN_model():
 		return model
 
 	def sign_accuracy(self, y_true, y_pred):
+		y_true = tf.cast(y_true, tf.float32)
+		y_pred = tf.cast(y_pred, tf.float32)
 		# Compare les signes : True si les signes sont identiques
 		same_sign = tf.equal(tf.sign(y_true), tf.sign(y_pred))
 	
