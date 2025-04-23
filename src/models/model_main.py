@@ -91,6 +91,7 @@ class Regression(Base):
 		with FileLock(os.path.join(self.data_path, 'assets_DB.csv.lock')):
 			df_assets = pd.read_csv(os.path.join(self.data_path, 'assets_DB.csv'), index_col=0)
 			self.to_process = df_assets.loc[df_assets['optimization'] < max_iter].iloc[0]
+			print(df_assets, self.to_process)
 			print(df_assets.loc[self.to_process.index, 'optimization'])
 			df_assets.loc[self.to_process.index, 'optimization'] += 1
 			df_assets.to_csv(os.path.join(self.data_path, 'assets_DB.csv'))
