@@ -105,7 +105,7 @@ class Regression(Base):
 			
 			n = max_iter + 1
 			while n >= max_iter:
-				if len(df_assets.loc[df_assets['optimization'] != False]) == 0:
+				if len(df_assets.loc[df_assets['optimization'] != True]) == 0:
 					sys.exit('All optimizations performed')
 				
 				else:
