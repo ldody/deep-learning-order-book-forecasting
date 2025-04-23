@@ -11,6 +11,7 @@ import optuna
 import time
 from joblib import Parallel, delayed
 import multiprocessing
+import tensorflow as tf
 from sklearn.model_selection import train_test_split, KFold
 
 '''import tensorflow as tf
