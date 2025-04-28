@@ -9,7 +9,7 @@ from fastparquet import write
 import tensorflow as tf
 from tensorflow.keras.layers import Input, Conv2D, Flatten, Dense, LSTM, MaxPooling2D
 from tensorflow.keras.models import Model
-from tensorflow.keras.layers import MultiHeadAttention, Dropout, Add, Reshape, Lambda
+from tensorflow.keras.layers import MultiHeadAttention, Dropout, Add, Reshape, Lambda, TimeDistributed
 from tensorflow.keras.optimizers import Adam
 
 tf.random.set_seed(42)
@@ -105,7 +105,9 @@ class ANN_model():
 				else:
 					s = (3,3)
 				x = Conv2D(filters=filters//2, kernel_size=s, activation='relu')(x)
-				
+			
+			x = TimeDistributed(Flatten())(x)
+
 			x = LSTM(units=hidden_units_LSTM, return_sequences=True, dropout=0.2)(x)
 			for _ in range(num_layers_LSTM - 1):
 				x = LSTM(units=hidden_units_LSTM, dropout=0.2)(x)
