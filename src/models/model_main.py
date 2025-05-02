@@ -174,7 +174,12 @@ class Regression(Base):
 				traceback.print_exc()
 				raise optuna.exceptions.TrialPruned()
 
-		study.optimize(objective, n_trials=1, timeout=17000)
+		try:
+			study.optimize(objective, n_trials=1, timeout=17000)
+		except:
+			with open("mon_job.err", "w") as f:
+				traceback.print_exc(file=f)
+			sys.exit(1)
 		
 
 class LimitTrainingTime(tf.keras.callbacks.Callback):
