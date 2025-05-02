@@ -177,7 +177,7 @@ class Regression(Base):
 		try:
 			study.optimize(objective, n_trials=1, timeout=17000)
 		except:
-			with open("mon_job.err", "w") as f:
+			with open(os.path.join(self.path_model, '{self.to_process["ISIN"]}_{self.to_process["data"]}_{self.to_process["model"]}.err'), "w") as f:
 				traceback.print_exc(file=f)
 			sys.exit(1)
 		
