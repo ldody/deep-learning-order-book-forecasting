@@ -5,7 +5,7 @@
 #SBATCH --mem-per-cpu=4000
 #SBATCH --mail-type=all
 #SBATCH --mail-user=leo.dody1@univ-lyon3.fr
-#SBATCH --output=/dev/null #FOB_prepro_%a.out #/dev/null
+#SBATCH --output=optuna_%a.out #optuna_%a.out #/dev/null
 #SBATCH --job-name=opti_%A_%a
 #SBATCH --partition=c6420-ib100
 #SBATCH --array=0-399%30
