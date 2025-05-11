@@ -20,14 +20,14 @@ ls_log = [f for f in os.listdir(path_model) if os.path.splitext(f)[1] == '.log']
 
 for f in ls_log:
 	
-	print(f.split('.')[0].split('_'))
+	print(f.split('_')[:-1])
 	
-	isin, data, model, _ = f.split('.')[0].split('_')
+	id_study = '_'.join(f.split('_')[:-1])
 	
 	
 	optuna.logging.get_logger("optuna").addHandler(logging.StreamHandler(sys.stdout))
-	STUDY_NAME = f'{isin}_{data}_{model}_optuna_study'
-	DB_PATH = os.path.join(path_model, f'{isin}_{data}_{model}_optimization.log')
+	STUDY_NAME = f'{id_study}_optuna_study'
+	DB_PATH = os.path.join(path_model, f'{id_study}_optimization.log')
 	storage = optuna.storages.JournalStorage(
 		optuna.storages.journal.JournalFileBackend(DB_PATH),
 	)
