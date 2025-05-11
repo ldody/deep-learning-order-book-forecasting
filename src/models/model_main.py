@@ -85,7 +85,7 @@ class Regression(Base):
 		
 		print(X_data, Y_data, scaler_p.__dict__, scaler_v.__dict__, scaler_t.__dict__)
 		
-	def optimization(self, max_iter : int = 100):
+	def optimization(self, max_iter : int = 50):
 		"""
 		Running hyperparameters optimization process.
 		"""
