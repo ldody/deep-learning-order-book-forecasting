@@ -19,6 +19,9 @@ path_model = os.path.join(root_path,'model')
 ls_log = [f for f in os.listdir(path_model) if os.path.splitext(f)[1] == '.log']
 
 for f in ls_log:
+	
+	print(f.split('.')[0].split('_'))
+	
 	isin, data, model = f.split('.')[0].split('_')
 	
 	
