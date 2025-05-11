@@ -22,7 +22,7 @@ for f in ls_log:
 	
 	print(f.split('.')[0].split('_'))
 	
-	isin, data, model = f.split('.')[0].split('_')
+	isin, data, model, _ = f.split('.')[0].split('_')
 	
 	
 	optuna.logging.get_logger("optuna").addHandler(logging.StreamHandler(sys.stdout))
