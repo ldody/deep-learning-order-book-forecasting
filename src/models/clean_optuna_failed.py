@@ -17,6 +17,8 @@ while '.venv' not in os.listdir(root_path):
 path_model = os.path.join(root_path,'model')
 
 ls_log = [f for f in os.listdir(path_model) if os.path.splitext(f)[1] == '.log']
+n = 0
+t = 0
 
 for f in ls_log:
 	
@@ -32,16 +34,23 @@ for f in ls_log:
 		optuna.storages.journal.JournalFileBackend(DB_PATH),
 	)
 	
+	t += 50
+	
 	try:
 		study = optuna.load_study(storage=storage, study_name=STUDY_NAME)
 		df = study.trials_dataframe()
-		
+		n += min(50, len(df[df['state'] == 'COMPLETED']))
+		'''
 		if list(set(df['state'].tolist())) == ['RUNNING']:
 			optuna.delete_study(storage=storage, study_name=STUDY_NAME)
 		
 		else:
 			pass
+		'''
 	
 	except:
 		traceback.print_exc()
 		
+print(f'Number of trials performed: {n}')
+print(f'Total number of trials to perform: {t}')
+print(f'Progress: {n/t*100}%')
