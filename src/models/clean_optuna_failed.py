@@ -39,18 +39,21 @@ for f in ls_log:
 	try:
 		study = optuna.load_study(storage=storage, study_name=STUDY_NAME)
 		df = study.trials_dataframe()
-		n += min(50, len(df[df['state'] == 'COMPLETED']))
-		'''
-		if list(set(df['state'].tolist())) == ['RUNNING']:
-			optuna.delete_study(storage=storage, study_name=STUDY_NAME)
+		n += min(50, len(df[df['state'] == 'COMPLETE']))
 		
+		if list(set(df['state'].tolist())) == ['RUNNING']:
+			os.remove(os.path.join(path_model, f))
+			print(f'delete {f}')
+
 		else:
 			pass
-		'''
-	
+
+
 	except:
-		traceback.print_exc()
-		
+		os.remove(os.path.join(path_model, f))
+		print(f'delete {f}')
+		n += 0
+
 print(f'Number of trials performed: {n}')
 print(f'Total number of trials to perform: {t}')
 print(f'Progress: {n/t*100}%')
