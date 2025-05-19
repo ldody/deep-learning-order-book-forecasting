@@ -11,6 +11,7 @@ from tensorflow.keras.layers import Input, Conv2D, Flatten, Dense, LSTM, MaxPool
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import MultiHeadAttention, Dropout, Add, Reshape, Lambda, TimeDistributed
 from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.callbacks import Callback, ModelCheckpoint
 
 tf.random.set_seed(42)
 
@@ -169,7 +170,17 @@ class ANN_model():
 		
 		return trial.params
 		
-		
+
+class DelayedCheckpoint(Callback):
+	def __init__(self, checkpoint_callback, start_epoch=30):
+		super().__init__()
+		self.checkpoint_callback = checkpoint_callback
+		self.start_epoch = start_epoch
+
+	def on_epoch_end(self, epoch, logs=None):
+		if epoch + 1 >= self.start_epoch:
+			self.checkpoint_callback.on_epoch_end(epoch, logs)
+
 		
 		
 #convert str to bool for argparse
