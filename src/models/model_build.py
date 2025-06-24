@@ -7,7 +7,7 @@ import argparse
 import optuna
 from fastparquet import write
 import tensorflow as tf
-from tensorflow.keras.layers import Input, Conv2D, Flatten, Dense, LSTM, MaxPooling2D
+from tensorflow.keras.layers import Input, Conv2D, Flatten, Dense, LSTM, MaxPooling2D, GlobalAveragePooling2D, BatchNormalization
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import MultiHeadAttention, Dropout, Add, Reshape, Lambda, TimeDistributed
 from tensorflow.keras.optimizers import Adam
@@ -76,9 +76,10 @@ class ANN_model():
 					s = (3,1)
 				else:
 					s = (3,3)
-				x = Conv2D(filters=filters//2, kernel_size=s, activation='relu')(x)
+				x = Conv2D(filters=filters//2, kernel_size=s, activation='relu', padding='same')(x)
 				
-			x = Flatten()(x)
+			x = BatchNormalization()(x)
+			x = GlobalAveragePooling2D()(x)
 			
 			for _ in range(num_layers - 1):
 				x = Dense(units=hidden_units, activation='relu')(x)
@@ -112,7 +113,7 @@ class ANN_model():
 			x = LSTM(units=hidden_units_LSTM, return_sequences=True, dropout=0.2)(x)
 			for _ in range(num_layers_LSTM - 1):
 				x = LSTM(units=hidden_units_LSTM, dropout=0.2)(x)
-				
+			
 			x = Flatten()(x)
 			
 			for _ in range(num_layers - 1):

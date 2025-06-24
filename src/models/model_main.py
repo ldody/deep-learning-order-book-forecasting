@@ -98,13 +98,14 @@ class Regression(Base):
 		# retrieving optimization to perform
 		with FileLock(os.path.join(self.data_path, 'assets_DB.csv.lock')):
 			df_assets = pd.read_csv(os.path.join(self.data_path, 'assets_DB.csv'), index_col=0)
+			df_assets[['optimization', 'process']] = df_assets[['optimization', 'process']].astype(str)
 			
-			if len(df_assets.loc[df_assets['process'] != True]) == 0:
+			if len(df_assets.loc[df_assets['process'] != 'True']) == 0:
 					sys.exit('All processes performed')
 					
 			else:
 				print(df_assets, df_assets[df_assets['optimization'] == 'True'])
-				self.to_process = df_assets.loc[(df_assets['process'] == False) & (df_assets['optimization'] == 'True')]
+				self.to_process = df_assets.loc[(df_assets['process'] == 'False') & (df_assets['optimization'] == 'True')]
 				print(self.to_process)
 				self.to_process['joined'] = self.to_process[['ISIN','data','model']].astype(str).apply(lambda x: '_'.join(x), axis=1)
 				self.to_process = self.to_process.iloc[0]
@@ -182,7 +183,7 @@ class Regression(Base):
 			df_assets.loc[self.to_process.name, 'process'] = True
 			df_assets.to_csv(os.path.join(self.data_path, 'assets_DB.csv'))
 		
-	def optimization(self, max_iter : int = 50):
+	def optimization(self, max_iter : int = 25):
 		"""
 		Running hyperparameters optimization process.
 		"""
@@ -202,12 +203,13 @@ class Regression(Base):
 			
 			n = max_iter + 1
 			while n >= max_iter:
-				if len(df_assets.loc[df_assets['optimization'] != True]) == 0:
+				if len(df_assets.loc[df_assets['optimization'] != 'True']) == 0:
 					sys.exit('All optimizations performed')
 				
 				else:
-					self.to_process = df_assets.loc[df_assets['optimization'] != True].sample(n=1).iloc[0]
+					self.to_process = df_assets.loc[df_assets['optimization'] != 'True'][:30].sample(n=1).iloc[0]
 					STUDY_NAME, DB_PATH, storage = load_optuna_config()
+					print(STUDY_NAME)
 				
 				try:
 					study = optuna.load_study(storage=storage, study_name=STUDY_NAME)
@@ -219,6 +221,16 @@ class Regression(Base):
 					study = optuna.create_study(storage=storage, study_name=STUDY_NAME, direction='minimize')
 					n = 0
 					
+				try:
+					print(f'number of combinations done: {n}')
+				except:
+					None
+				
+				try:
+					if len(df) > max_iter*1.2:
+						n = max_iter
+				except: None
+				
 				if n >= max_iter:
 					df_assets.loc[self.to_process.name, 'optimization'] = True
 					df_assets.to_csv(os.path.join(self.data_path, 'assets_DB.csv'))

@@ -2,13 +2,13 @@
 #SBATCH --time=24:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --mem-per-cpu=8000
+#SBATCH --mem-per-cpu=6000
 #SBATCH --mail-type=all
 #SBATCH --mail-user=leo.dody1@univ-lyon3.fr
-#SBATCH --output=optuna_%a.out #optuna_%a.out #/dev/null
-#SBATCH --job-name=opti_%A_%a
+#SBATCH --output=forecast_%a.out #optuna_%a.out #/dev/null
+#SBATCH --job-name=forecast_%a
 #SBATCH --partition=c6420-ib100
-#SBATCH --array=0-550%10
+#SBATCH --array=0-10%3
 
 
 module purge
@@ -18,6 +18,6 @@ source /home_nfs/polytech/leo.dody/PhD/Article_1/PhD_article_1/.venv/bin/activat
 
 export PYTHONUNBUFFERED=TRUE
 
-python3 ../src/models/model_main.py -ba True --job_id $SLURM_ARRAY_TASK_ID
+python3 ../src/models/model_main.py -sa True --job_id $SLURM_ARRAY_TASK_ID
 
 deactivate
