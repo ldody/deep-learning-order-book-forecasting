@@ -2,13 +2,13 @@
 #SBATCH --time=24:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --mem-per-cpu=8000
+#SBATCH --mem-per-cpu=4000
 #SBATCH --mail-type=all
 #SBATCH --mail-user=leo.dody1@univ-lyon3.fr
-#SBATCH --output=optuna_%a.out #optuna_%a.out #/dev/null
+#SBATCH --output=optuna_%A_%a.out #optuna_%a.out #/dev/null
 #SBATCH --job-name=opti_%A_%a
 #SBATCH --partition=c6420-ib100
-#SBATCH --array=0-550%10
+#SBATCH --array=0-400%20
 
 
 module purge
