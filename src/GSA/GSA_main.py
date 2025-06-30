@@ -130,8 +130,8 @@ class GSA(Base):
 			return self.model.predict(X_samp, verbose=0)['pred']
 			
 		Y = []
-		#for row in range(X.shape[0]):
-		for row in range(10):
+		for row in range(self.X.shape[0]):
+		#for row in range(10):
 			print(row)
 			Y.append(np.array([run_model(params, self.X, row) for params in param_values]))
 			
@@ -182,8 +182,8 @@ class GSA(Base):
 		
 		res = pd.DataFrame()
 
-		#for t in range(Y.shape[2]):
-		for t in range(4):
+		for t in range(Y.shape[2]):
+		#for t in range(4):
 			print(t)
 			Si = sobol.analyze(problem, Y[:,:,t].reshape(Y.shape[0]), calc_second_order=False)
 
@@ -220,6 +220,7 @@ class GSA(Base):
 			self.model.load_weights(os.path.join(self.architecture_path, f"{self.to_process['file']}.h5"))
 			
 			res_morris = self.LSA_morris()
+			write(os.path.join(self.GSA_path, f"{self.to_process['file']}_LSA.parquet.gzip"), res_morris, compression='GZIP', append=False)
 			res_sobol = self.GSA_sobol(res_morris)
 			
 			write(os.path.join(self.GSA_path, f"{self.to_process['file']}.parquet.gzip"), res_sobol, compression='GZIP', append=False)
