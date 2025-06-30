@@ -247,7 +247,7 @@ class Regression(Base):
 			X_data, Y_data, _, _, _ = self.prepro.preprocessing(self.df_features, data_type = self.to_process['data'])
 			X_data, Y_data = X_data[:int(0.8*len(X_data))], Y_data[:int(0.8*len(Y_data))]
 			
-			k = 5
+			k = 3#5
 			kf = KFold(n_splits=k, shuffle=True, random_state=42)
 			score = []
 
