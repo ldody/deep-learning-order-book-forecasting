@@ -229,7 +229,7 @@ class GSA(Base):
 			with FileLock(os.path.join(self.data_path, 'assets_GSA.csv.lock')):
 				df_assets = pd.read_csv(os.path.join(self.data_path, 'assets_GSA.csv'), index_col=0)
 				
-				df_assets.loc[self.to_process.name, 'GSA'] = 'PENDING'
+				df_assets.loc[self.to_process.name, 'GSA'] = 'ERROR'
 				df_assets.to_csv(os.path.join(self.data_path, 'assets_GSA.csv'))
 				traceback.print_exc()
 		
