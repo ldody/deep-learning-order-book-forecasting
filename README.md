@@ -12,6 +12,7 @@ The repository accompanies the scientific article:
 
 **Published article:**
 https://shs.cairn.info/journal-finance-2026-0-page-I55?lang=en&tab=resume\
+
 **Full Order Book data source:**
 https://www.euronext.com/en/products-services/nexthistory
 
