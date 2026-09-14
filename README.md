@@ -488,6 +488,28 @@ through this repository.
 
 ------------------------------------------------------------------------
 
+## Notebooks
+
+The notebooks/ directory contains a small selection of analysis and visualization notebooks retained as research companions to the main Python pipeline. They are included to illustrate the exploratory and diagnostic work carried out around the experiments; they are not required to run the core pipeline.
+
+The public repository keeps only the notebooks that are most useful for understanding the final workflow:
+
+metrics.ipynb — exploratory analysis of forecasting metrics and their distributions.
+
+eval_results.ipynb — inspection and comparison of model evaluation outputs.
+
+comparison_opti.ipynb — comparison of hyperparameter-optimization experiments.
+
+visu_sobol.ipynb — visualization and interpretation utilities for the Sobol sensitivity analysis.
+
+visu_split.ipynb — visualization of the temporal/data splitting strategy.
+
+Other local notebooks were development, debugging, preprocessing, or one-off exploratory files and are intentionally excluded from the public repository. Notebook-generated CSV files, model files, logs, checkpoints, and intermediate datasets are excluded as well.
+
+Note: these notebooks may reference intermediate experiment outputs or local research data that are not distributed with this repository. They should therefore be viewed primarily as transparent examples of the analysis workflow rather than as standalone, fully reproducible entry points. For the project workflow, use the scripts under src/ and the Slurm orchestration described above.
+
+------------------------------------------------------------------------
+
 ## Disclaimer
 
 This repository is provided for **research, educational and portfolio

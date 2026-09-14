@@ -27,9 +27,6 @@ slurm-*.err
 # Jupyter
 .ipynb_checkpoints/
 
-# CSV files generated/used in notebooks
-notebooks/*.csv
-
 # Python tooling / tests
 .pytest_cache/
 .mypy_cache/
@@ -63,3 +60,21 @@ checkpoints/
 # Temporary files
 *.tmp
 *.temp
+
+# Notebooks
+# Ignore everything in notebooks/ by default, then keep only the
+# analysis notebooks that are useful for the public portfolio.
+notebooks/*
+!notebooks/metrics.ipynb
+!notebooks/eval_results.ipynb
+!notebooks/comparison_opti.ipynb
+!notebooks/visu_sobol.ipynb
+!notebooks/visu_split.ipynb
+
+# Notebook-generated artefacts
+notebooks/.ipynb_checkpoints/
+notebooks/*.csv
+notebooks/*.h5
+notebooks/*.parquet
+notebooks/*.parquet.gzip
+notebooks/*.log
