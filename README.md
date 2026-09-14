@@ -6,20 +6,13 @@ market microstructure data and conventional **OHLCV** data.
 
 The repository accompanies the scientific article:
 
-> **Léo Dody --- "Forecasting stock prices: Deep Learning and Full Order
-> Book Dynamics"**\
-> *Finance*, Association Française de Finance, 2026.
+> **Dody, L. (2026). Forecasting stock prices: Deep Learning and Full Order Book Dynamics. *Finance*, 47(2), 52-101.**
 
 **Published article:**
-https://shs.cairn.info/journal-finance-2026-0-page-I55?lang=en&tab=resume\
+📄 [Read the published article](https://shs.cairn.info/journal-finance-2026-0-page-I55?lang=en&tab=resume)
 
 **Full Order Book data source:**
-https://www.euronext.com/en/products-services/nexthistory
-
-> **Portfolio note:** this repository focuses on the implementation and
-> research pipeline. Empirical results from the published article are
-> intentionally not reproduced here. Access to the article may require a
-> subscription or institutional access.
+📊 [Euronext NextHistory — Full Order Book data](https://www.euronext.com/en/products-services/nexthistory)
 
 ------------------------------------------------------------------------
 
@@ -472,17 +465,13 @@ preserves the original research implementation.
 
 This code accompanies:
 
-**Dody, L. (2026). *Forecasting stock prices: Deep Learning and Full
-Order Book Dynamics*. Finance, Association Française de Finance.**
+**Dody, L. (2026). Forecasting stock prices: Deep Learning and Full Order Book Dynamics. *Finance*, 47(2), 52-101.**
 
 Publication page:\
-https://shs.cairn.info/journal-finance-2026-0-page-I55?lang=en&tab=resume
+📄 [Read the published article](https://shs.cairn.info/journal-finance-2026-0-page-I55?lang=en&tab=resume)
 
 The publication provides the scientific motivation, methodology and
 academic discussion associated with the project.
-
-This README deliberately does **not** reproduce the empirical findings
-or numerical results of the published article.
 
 ------------------------------------------------------------------------
 
@@ -491,7 +480,7 @@ or numerical results of the published article.
 Full Order Book data used in the research were obtained from:
 
 **Euronext --- NextHistory**\
-https://www.euronext.com/en/products-services/nexthistory
+📊 [Euronext NextHistory — Full Order Book data](https://www.euronext.com/en/products-services/nexthistory)
 
 Euronext data are subject to the provider's applicable access and
 licensing terms. No raw Euronext Full Order Book data are distributed
@@ -514,6 +503,3 @@ guarantee future performance.
 ## Author
 
 **Léo Dody**
-
-Research interests: quantitative finance, market microstructure, machine
-learning, deep learning and explainable AI for financial markets.
