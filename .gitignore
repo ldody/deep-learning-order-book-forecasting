@@ -27,6 +27,9 @@ slurm-*.err
 # Jupyter
 .ipynb_checkpoints/
 
+# CSV files generated/used in notebooks
+notebooks/*.csv
+
 # Python tooling / tests
 .pytest_cache/
 .mypy_cache/
